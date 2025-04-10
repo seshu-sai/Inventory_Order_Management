@@ -1,38 +1,26 @@
-package com.InventoryManagement.product_service.Model;
+package com.InventoryManagement.product_service.DTO;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "Products")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product {
+public class ProductDTO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
-
-    @Column(unique = true)
-    private String sku;
-
     private String description;
-
-    private int quantity;
-
-    private double price;
-
-    private boolean active;
-
-    private Long categoryId;
-
-    private Long supplierId;
-
     private int stock;
-
+    private double price;
+    private Long categoryId;
+    private Long supplierId;
 }
