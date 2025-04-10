@@ -2,6 +2,7 @@ package com.InventoryManagement.order_service.Service;
 
 
 import com.InventoryManagement.order_service.DTO.OrderDTO;
+import com.InventoryManagement.order_service.Model.OrderItemClient;
 import com.InventoryManagement.order_service.Repository.OrderRepository;
 import com.InventoryManagement.order_service.ForiegnDTO.OrderItemDTO;
 import com.InventoryManagement.order_service.Model.Order;
@@ -22,15 +23,29 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    OrderItemClient orderItemClient;
+
     @Override
     public OrderDTO createOrder(OrderDTO orderDTO) {
-        Order order = modelMapper.map(orderDTO, Order.class);
+        Order order = new Order();
         order.setOrderDate(LocalDateTime.now());
         order.setStatus("PENDING");
-        order.setTotalAmount(orderDTO.getItems().stream().mapToDouble(OrderItemDTO::getTotalPrice).sum());
+        order.setCustomerId(orderDTO.getCustomerId());
+        order.setTotalAmount(orderDTO.getTotalAmount());
 
-        Order saved = orderRepository.save(order);
-        return modelMapper.map(saved, OrderDTO.class);
+        Order savedOrder = orderRepository.save(order);
+
+        // Set orderId to each item
+        List<OrderItemDTO> itemsWithOrderId = orderDTO.getItems().stream()
+                .peek(item -> item.setOrderId(savedOrder.getId()))
+                .collect(Collectors.toList());
+
+        List<OrderItemDTO> savedItems = orderItemClient.createItemFromOrders(itemsWithOrderId);
+        OrderDTO result = modelMapper.map(savedOrder, OrderDTO.class);
+        result.setItems(savedItems);
+
+        return result;
     }
 
     @Override
