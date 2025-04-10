@@ -2,9 +2,10 @@ package com.InventoryManagement.order_service.Service;
 
 
 import com.InventoryManagement.order_service.DTO.OrderDTO;
-import com.InventoryManagement.order_service.DTO.OrderRepository;
+import com.InventoryManagement.order_service.Repository.OrderRepository;
 import com.InventoryManagement.order_service.ForiegnDTO.OrderItemDTO;
 import com.InventoryManagement.order_service.Model.Order;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
