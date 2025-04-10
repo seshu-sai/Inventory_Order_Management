@@ -1,9 +1,18 @@
 package com.InventoryManagement.order_service.ForiegnDTO;
 
-public class OrderItemDTO {
-    private Long id;
-    private Long productId;
-    private int quantity;
-    private double price;
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.Data;
 
+@Data
+public class OrderItemDTO {
+
+    private Long id;
+    private int quantity;
+    private double unitPrice;
+    private double totalPrice;
+    private Long order;
+    private Long product;
 }
