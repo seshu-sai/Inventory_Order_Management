@@ -1,4 +1,4 @@
-package com.InventoryManagement.product_service.DTO;
+package com.InventoryManagement.demo.Model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,19 +10,14 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class ProductDTO {
+@NoArgsConstructor
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
     private String name;
-    private String description;
-    private int stock;
-    private double price;
-    private Long categoryId;
-    private Long supplierId;
-    private String sku;
-    private int quantity;
+    private String password;
+    private String email;
 }
