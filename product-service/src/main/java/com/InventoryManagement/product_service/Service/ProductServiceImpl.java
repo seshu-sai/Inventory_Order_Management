@@ -2,7 +2,10 @@ package com.InventoryManagement.product_service.Service;
 
 import com.InventoryManagement.product_service.DTO.ProductDTO;
 import com.InventoryManagement.product_service.ExceptionHandling.ResourceNotFoundException;
+import com.InventoryManagement.product_service.ForiegnDTO.SupplierDTO;
+import com.InventoryManagement.product_service.Model.CategoryClient;
 import com.InventoryManagement.product_service.Model.Product;
+import com.InventoryManagement.product_service.Model.SupplierClient;
 import com.InventoryManagement.product_service.Repository.ProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,19 +17,30 @@ import java.util.stream.Collectors;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    @Autowired
+
     private final ProductRepository productRepository;
 
-    @Autowired
     private final ModelMapper modelMapper;
 
-    public ProductServiceImpl(ProductRepository productRepository, ModelMapper modelMapper) {
+    private final SupplierClient supplierClient;
+
+    private final CategoryClient categoryClient;
+
+    public ProductServiceImpl(ProductRepository productRepository, ModelMapper modelMapper,
+                              SupplierClient supplierClient
+                                , CategoryClient categoryClient) {
         this.productRepository = productRepository;
         this.modelMapper = modelMapper;
+        this.supplierClient = supplierClient;
+        this.categoryClient = categoryClient;
     }
 
     @Override
     public ProductDTO createProduct(ProductDTO productDTO) {
+        SupplierDTO supplierId = supplierClient.getSupplierById(productDTO.getSupplierId());
+        if(supplierId == null) {
+            throw new ResourceNotFoundException("Supplier not found");
+        }
         Product product = modelMapper.map(productDTO, Product.class);
         Product saved = productRepository.save(product);
         return modelMapper.map(saved, ProductDTO.class);

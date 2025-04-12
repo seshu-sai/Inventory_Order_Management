@@ -13,7 +13,7 @@ import java.util.List;
 @FeignClient(name = "orderItem-service") // Service name registered in Eureka
 public interface OrderItemClient {
 
-    @GetMapping("/order-items/order/{orderId}")
+    @GetMapping("/api/order-items/order/{orderId}")
     List<OrderItemDTO> getItemsByOrderId(@PathVariable("orderId") Long orderId);
 
 
