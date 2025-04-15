@@ -19,8 +19,9 @@ public class JwtService {
     private static final String SECRET_KEY = "my-super-secret-key-that-needs-to-be-very-long-and-secure";
 
     // ✅ Generate JWT
-    public String generateToken(String username) {
+    public String generateToken(String username, String authority) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("authority", authority);
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(username)
@@ -67,4 +68,10 @@ public class JwtService {
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
+
+    public String extractUserRole(String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.get("authority", String.class);
+    }
+
 }

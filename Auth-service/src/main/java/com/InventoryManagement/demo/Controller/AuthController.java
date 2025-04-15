@@ -30,11 +30,11 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String addUser(@RequestBody  User user) {
+    public String addUser(@RequestBody User user) {
         System.out.println(user);
-        System.out.println(authService.generateToken(user.getEmail()));
+        System.out.println(authService.generateToken(user.getEmail(), user.getAuthority()));
           authService.saveUser(user);
-          return authService.generateToken(user.getEmail());
+          return authService.generateToken(user.getEmail(), user.getAuthority());
     }
 
     @PostMapping("/token")
@@ -43,7 +43,7 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword())
         );
         if (authenticate.isAuthenticated()) {
-            return authService.generateToken(user.getEmail());
+            return authService.generateToken(user.getEmail(), user.getAuthority());
         } else {
             throw new RuntimeException("Authentication failed");
         }

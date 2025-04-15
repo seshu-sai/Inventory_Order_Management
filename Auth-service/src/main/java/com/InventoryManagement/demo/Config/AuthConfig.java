@@ -25,15 +25,27 @@ public class AuthConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.csrf( csrf -> csrf.disable())
-                .authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests
-                                //.requestMatchers("/auth/**")
-                                .anyRequest()
-                                .permitAll())
-                                .build();
+        return http
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/**").permitAll()
 
+                        // Role-based access
+                        .requestMatchers("/api/products/**").hasAnyAuthority("ADMIN", "USER")
+                        .requestMatchers("/api/orders/**").hasAuthority("USER")
+                        .requestMatchers("/api/suppliers/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/categories/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/categories").hasAuthority("ADMIN")
+                        .requestMatchers("/api/orderItems/**").hasAnyAuthority("ADMIN", "USER")
+                        .requestMatchers("/api/customers/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/stockMovements/**").hasAuthority("ADMIN")
+
+                        // Everything else requires auth
+                        .anyRequest().authenticated()
+                )
+                .build();
     }
+
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
