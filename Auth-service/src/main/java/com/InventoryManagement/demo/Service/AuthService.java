@@ -37,5 +37,9 @@ public class AuthService {
         return jwtService.validateToken(token, user);
     }
 
+    public String extractUsername(String token) {
+        return jwtService.extractUserName(token);
+    }
+
 
 }

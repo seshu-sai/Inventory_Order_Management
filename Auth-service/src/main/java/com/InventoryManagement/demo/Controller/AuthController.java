@@ -32,12 +32,16 @@ public class AuthController {
     @PostMapping("/register")
     public String addUser(@RequestBody  User user) {
         System.out.println(user);
-        return  authService.saveUser(user);
+        System.out.println(authService.generateToken(user.getEmail()));
+          authService.saveUser(user);
+          return authService.generateToken(user.getEmail());
     }
 
     @PostMapping("/token")
     public String getToken(@RequestBody User user) {
-        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+        Authentication authenticate = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword())
+        );
         if (authenticate.isAuthenticated()) {
             return authService.generateToken(user.getEmail());
         } else {
@@ -45,14 +49,13 @@ public class AuthController {
         }
     }
 
+
     @GetMapping("/validate")
-    public boolean validateToken(@RequestParam("token") String token, User user) {
-        return authService.validateToken(token, user);
+    public boolean validateToken(@RequestParam String token) {
+        String username = authService.extractUsername(token);
+        return authenticationRepository.findByEmail(username)
+                .map(user -> authService.validateToken(token, user))
+                .orElse(false);
     }
-
-
-
-
-
 
 }
