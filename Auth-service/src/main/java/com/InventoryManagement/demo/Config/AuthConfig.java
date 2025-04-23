@@ -29,7 +29,7 @@ public class AuthConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
-
+                        .requestMatchers("/auth/token").permitAll()
                         // Role-based access
                         .requestMatchers("/api/products/**").hasAnyAuthority("ADMIN", "USER")
                         .requestMatchers("/api/orders/**").hasAuthority("USER")
