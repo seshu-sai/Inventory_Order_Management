@@ -37,10 +37,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public String addUser(@RequestBody User user) {
-        System.out.println(user);
-        System.out.println(authService.generateToken(user.getEmail(), user.getAuthority()));
-          authService.saveUser(user);
-          return authService.generateToken(user.getEmail(), user.getAuthority());
+          return authService.saveUser(user);
     }
 
     @PostMapping("/token")
