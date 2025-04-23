@@ -3,9 +3,12 @@ package com.InventoryManagement.order_service.Service;
 
 import com.InventoryManagement.order_service.DTO.OrderDTO;
 import com.InventoryManagement.order_service.Model.OrderItemClient;
+import com.InventoryManagement.order_service.Model.ProductClient;
 import com.InventoryManagement.order_service.Repository.OrderRepository;
 import com.InventoryManagement.order_service.ForiegnDTO.OrderItemDTO;
 import com.InventoryManagement.order_service.Model.Order;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +29,10 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     OrderItemClient orderItemClient;
 
+
+    @Autowired
+    OrderEventPublisher orderEventPublisher;
+
     @Override
     public OrderDTO createOrder(OrderDTO orderDTO) {
         Order order = new Order();
@@ -36,15 +43,17 @@ public class OrderServiceImpl implements OrderService {
 
         Order savedOrder = orderRepository.save(order);
 
-        // Set orderId to each item
+
+
         List<OrderItemDTO> itemsWithOrderId = orderDTO.getItems().stream()
-                .peek(item -> item.setOrderId(savedOrder.getId()))
+                .peek(item -> {item.setOrderId(savedOrder.getId());
+                })
                 .collect(Collectors.toList());
 
         List<OrderItemDTO> savedItems = orderItemClient.createItemFromOrders(itemsWithOrderId);
         OrderDTO result = modelMapper.map(savedOrder, OrderDTO.class);
         result.setItems(savedItems);
-
+        orderEventPublisher.sendOrderEvent(savedOrder.getId(), savedOrder.getCustomerId());
         return result;
     }
 

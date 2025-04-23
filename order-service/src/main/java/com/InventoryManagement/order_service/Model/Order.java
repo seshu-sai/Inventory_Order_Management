@@ -27,6 +27,8 @@ public class Order {
 
     private Long customerId;
 
+    private String productName;
+
     @Transient
     private List<OrderItemDTO> items;
 

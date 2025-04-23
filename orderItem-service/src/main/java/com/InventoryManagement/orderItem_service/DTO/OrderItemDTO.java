@@ -16,5 +16,6 @@ public class OrderItemDTO {
     private double totalPrice;
     private Long orderId;
     private Long productId;
+    private String productName;
 
 }
